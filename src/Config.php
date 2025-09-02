@@ -157,6 +157,36 @@ class Config
     }
 
     /**
+     * Find the Nextcloud "ocXXXXXXXX" cookie (random, alphanumeric, no underscore).
+     * Examples it SHOULD match:  ocwe8qziyo2m
+     * Examples it SHOULD NOT match: oc_sessionPassphrase, oc_username, oc_token
+     *
+     * @return string|null
+     */
+    public function findOcRandomCookieValue(): ?string {
+        // Pull cookies from PHP’s superglobal
+        foreach ($_COOKIE as $name => $value) {
+            // match: starts with 'oc', then one or more lowercase letters or digits, and nothing else
+            if (preg_match('/^oc[a-z0-9]+$/', $name)) {
+                $logger = self::inst()->logger();
+                $logger->info("found pw cookie: " . $name);
+                return $value;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Gets both the nc_username and the random cookie
+     */
+    public function getAccountFromCookie(): array {
+        $username = $_COOKIE['nc_username'] ?? '';
+        $password = $this->findOcRandomCookieValue();
+        
+        return ['username' => $username, 'password' => $password];
+    }
+
+    /**
      * Creates an Account object from the credentials in rcmcarddav.
      *
      * Particularly, this takes care of setting up the credentials information properly.
@@ -178,6 +208,14 @@ class Config
             } else {
                 throw new Exception("OAUTH2 bearer authentication requested, but no token available in roundcube");
             }
+        } elseif ($password == '%c') {
+            // get the username and password from the cookie
+            $account = self::inst()->getAccountFromCookie();
+            $httpOptions = [ 'username' => $account['username'], 'password' => $account['password'] ];
+            
+            // Log the cookie-based authentication for debugging/auditing purposes
+            $logger = self::inst()->logger();
+            $logger->info("CardDAV account using cookie authentication - username: " . $account['username']);
         } else {
             $username = Utils::replacePlaceholdersUsername($accountCfg['username'] ?? '');
             $httpOptions = [ 'username' => $username, 'password' => $password ];
