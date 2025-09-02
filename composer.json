@@ -55,8 +55,7 @@
     "autoload-dev": {
         "psr-4": {
             "MStilkerich\\Tests\\RCMCardDAV\\": "tests/"
-        },
-        "classmap": ["roundcubemail/program/"]
+        }
     },
     "prefer-stable" : true,
     "config": {
