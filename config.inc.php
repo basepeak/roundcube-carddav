@@ -49,7 +49,7 @@ $prefs['nextcloud_user'] = [
     'ssl_noverify'         => false,
 
     // Defaults für entdeckte Bücher
-    'name'                 => '%a: %N',
+    'name'                 => '%N',
     'active'               => true,
     'readonly'             => false,
     'refresh_time'         => '01:00:00',
