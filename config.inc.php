@@ -35,7 +35,6 @@ $prefs['nextcloud_user'] = [
     //'username'             => '%u',   // falls OIDC-Name != NC-Name, kann der User es im UI anpassen
     'password' => '%c',
     'discovery_url'        => 'https://%HOST%/remote.php/dav/',
-    'rediscover_time'      => '24:00:00',
     'preemptive_basic_auth'=> true,
     'ssl_noverify'         => false,
 
@@ -43,7 +42,8 @@ $prefs['nextcloud_user'] = [
     'name'                 => '%N',
     'active'               => true,
     'readonly'             => false,
-    'refresh_time'         => '01:00:00',
+    'refresh_time'         => '00:10:00',
+    'rediscover_time'      => '01:00:00',
     'use_categories'       => true,
     'fixed'        =>  ['discovery_url', 'username', 'password', 'ssl_noverify', 'preemptive_basic_auth'],
 ];
